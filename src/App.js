@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { Navigate } from "react-router-dom";
-
 // Pages
 import Quiz from "./pages/Quiz";
 import Results from "./pages/Results";
