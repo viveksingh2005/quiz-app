@@ -1,0 +1,68 @@
+[
+    {
+      "id": "l1",
+      "question": "What is the capital of France?",
+      "options": ["Paris", "London", "Berlin", "Rome"],
+      "correctAnswer": "Paris"
+    },
+    {
+      "id": "l2",
+      "question": "Which data structure works on FIFO?",
+      "options": ["Stack", "Queue", "Tree", "Graph"],
+      "correctAnswer": "Queue"
+    },
+    {
+      "id": "l3",
+      "question": "Which planet is known as the Red Planet?",
+      "options": ["Earth", "Jupiter", "Venus", "Mars"],
+      "correctAnswer": "Mars"
+    },
+    {
+      "id": "l4",
+      "question": "React uses which pattern for building UIs?",
+      "options": ["MVC", "MVVM", "Component-based", "Observer-only"],
+      "correctAnswer": "Component-based"
+    },
+    {
+      "id": "l5",
+      "question": "CSS stands for?",
+      "options": [
+        "Cascading Style Sheets",
+        "Cross Style Source",
+        "Computer Styled System",
+        "Cascaded Server Sheets"
+      ],
+      "correctAnswer": "Cascading Style Sheets"
+    },
+    {
+      "id": "l6",
+      "question": "HTTP status code for Not Found is?",
+      "options": ["200", "301", "404", "500"],
+      "correctAnswer": "404"
+    },
+    {
+      "id": "l7",
+      "question": "In JS, which keyword declares a block-scoped variable?",
+      "options": ["var", "let", "static", "def"],
+      "correctAnswer": "let"
+    },
+    {
+      "id": "l8",
+      "question": "Which HTML tag is used for the largest heading?",
+      "options": ["<h6>", "<title>", "<head>", "<h1>"],
+      "correctAnswer": "<h1>"
+    },
+    {
+      "id": "l9",
+      "question": "Which one is a NoSQL database?",
+      "options": ["PostgreSQL", "MongoDB", "MySQL", "MariaDB"],
+      "correctAnswer": "MongoDB"
+    },
+    {
+      "id": "l10",
+      "question": "Git command to clone a repository?",
+      "options": ["git copy", "git pull", "git clone", "git fetch"],
+      "correctAnswer": "git clone"
+    }
+  ]
+  
