@@ -5,27 +5,6 @@ import { Navigate } from "react-router-dom";
 import Quiz from "./pages/Quiz";
 import Results from "./pages/Results";
 
-// Utility: decode HTML entities from OpenTDB
-const decode = (str) => {
-  const txt = document.createElement("textarea");
-  txt.innerHTML = str;
-  return txt.value;
-};
-
-// Normalize OpenTDB question to our UI model
-const normalizeQuestions = (items) =>
-  items.map((q, idx) => {
-    const incorrect = q.incorrect_answers.map(decode);
-    const correct = decode(q.correct_answer);
-    const options = [...incorrect, correct].sort(() => Math.random() - 0.5);
-    return {
-      id: `${idx}-${Date.now()}`,
-      question: decode(q.question),
-      options,
-      correctAnswer: correct,
-    };
-  });
-
 export default function App() {
   const [questions, setQuestions] = useState([]);
   const [status, setStatus] = useState("loading"); // loading | ready | error
@@ -33,7 +12,7 @@ export default function App() {
   const [answers, setAnswers] = useState([]); // {selected: string|null, timedOut: boolean}[]
   const navigate = useNavigate();
 
-  // Load questions from API with local JSON fallback
+  // Load questions from local JSON only
   useEffect(() => {
     let cancelled = false;
 
@@ -41,44 +20,26 @@ export default function App() {
       setStatus("loading");
       setErrorMsg("");
       try {
-        // Try API first
-        const res = await fetch(
-          "https://opentdb.com/api.php?amount=10&type=multiple&encode=url3986"
-        );
-        const data = await res.json();
-        if (!data || data.response_code !== 0 || !Array.isArray(data.results)) {
-          throw new Error("API returned empty/invalid data");
+        // Always load local JSON
+        const res = await fetch(`${process.env.PUBLIC_URL}/questions.json`);
+        const items = await res.json();
+
+        if (!Array.isArray(items) || items.length === 0) {
+          throw new Error("Local questions.json missing/invalid");
         }
+
         if (!cancelled) {
-          const normalized = normalizeQuestions(data.results);
-          setQuestions(normalized);
-          setAnswers(
-            normalized.map(() => ({ selected: null, timedOut: false }))
-          );
+          setQuestions(items);
+          setAnswers(items.map(() => ({ selected: null, timedOut: false })));
           setStatus("ready");
           navigate("/quiz");
         }
       } catch (e) {
-        // Fallback to local JSON
-        try {
-          const local = await fetch("/questions.json");
-          const items = await local.json();
-          if (!Array.isArray(items) || items.length === 0) {
-            throw new Error("Local questions.json missing/invalid");
-          }
-          if (!cancelled) {
-            setQuestions(items);
-            setAnswers(items.map(() => ({ selected: null, timedOut: false })));
-            setStatus("ready");
-            navigate("/quiz");
-          }
-        } catch (e2) {
-          if (!cancelled) {
-            setStatus("error");
-            setErrorMsg(
-              "Failed to load questions from API and local file. Please check your connection or questions.json."
-            );
-          }
+        if (!cancelled) {
+          setStatus("error");
+          setErrorMsg(
+            "Failed to load local questions.json. Please check your file."
+          );
         }
       }
     };
@@ -100,7 +61,6 @@ export default function App() {
 
   const resetAll = () => {
     setAnswers(questions.map(() => ({ selected: null, timedOut: false })));
-    // Send back to first question inside /quiz page logic via query or default
     navigate("/quiz");
   };
 
@@ -135,32 +95,30 @@ export default function App() {
     <div className="wrap">
       <header className="brand">Quiz App</header>
 
-
-<Routes>
-  <Route
-    path="/quiz"
-    element={
-      <Quiz
-        questions={questions}
-        answers={answers}
-        setAnswers={setAnswers}
-      />
-    }
-  />
-  <Route
-    path="/results"
-    element={
-      <Results
-        questions={questions}
-        answers={answers}
-        score={score}
-        resetAll={resetAll}
-      />
-    }
-  />
-  <Route path="/" element={<Navigate to="/quiz" replace />} />
-</Routes>
-
+      <Routes>
+        <Route
+          path="/quiz"
+          element={
+            <Quiz
+              questions={questions}
+              answers={answers}
+              setAnswers={setAnswers}
+            />
+          }
+        />
+        <Route
+          path="/results"
+          element={
+            <Results
+              questions={questions}
+              answers={answers}
+              score={score}
+              resetAll={resetAll}
+            />
+          }
+        />
+        <Route path="/" element={<Navigate to="/quiz" replace />} />
+      </Routes>
     </div>
   );
 }
